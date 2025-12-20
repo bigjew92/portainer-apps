@@ -1,0 +1,12 @@
+version: "2.1"
+services:
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:6
+    container_name: cross-seed
+    ports:
+      - "2468:2468"
+    volumes:
+      - /volume1/docker/cross/config:/config
+      - # You will need at least one extra volume for your media drive if using https://www.cross-seed.org/docs/tutorials/linking
+    command: daemon
+    restart: unless-stopped
