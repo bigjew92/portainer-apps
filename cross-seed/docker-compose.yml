@@ -8,6 +8,6 @@ services:
     volumes:
       - /volume1/docker/cross/config:/config
       # You will need at least one extra volume for your media drive if using https://www.cross-seed.org/docs/tutorials/linking
-      - /volume1/docker/delugevpn/data/completed:/data/completed
+      - /volume1/docker/delugevpn/data:/data
     command: daemon
     restart: unless-stopped
