@@ -8,14 +8,15 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
+      - DEBUG=true
       - ENABLE_PRIVOXY=no
       - HOME=/home/nobody
       - LAN_NETWORK=192.168.86.0/24
       - LANG=en_GB.UTF-8
       - NAME_SERVERS=84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - PGID=0
-      - PUID=0
+      - PGID=100
+      - PUID=99
       - STRICT_PORT_FORWARD=no
       - TERM=xterm
       - UMASK=000
@@ -37,4 +38,6 @@ services:
       - /volume1/docker/qbit/config:/config
       - /volume1/docker/qbit/data:/data
       - /etc/localtime:/etc/localtime:ro
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
