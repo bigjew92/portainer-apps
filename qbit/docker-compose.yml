@@ -3,7 +3,7 @@ version: '3'
 
 services:
   qbit:
-    image: binhex/arch-qbittorrentvpn:5.1.2-1-05
+    image: ghcr.io/binhex/arch-qbittorrentvpn:5.2.0-1-01
     container_name: qbit
     cap_add:
       - NET_ADMIN
@@ -15,8 +15,8 @@ services:
       - LANG=en_GB.UTF-8
       - NAME_SERVERS=84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - PGID=100
-      - PUID=99
+      - PGID=0
+      - PUID=0
       - STRICT_PORT_FORWARD=no
       - TERM=xterm
       - UMASK=000
