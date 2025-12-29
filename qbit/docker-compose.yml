@@ -1,0 +1,40 @@
+---
+version: '3'
+
+services:
+  deluge:
+    image: binhex/arch-qbittorrentvpn:5.1
+    container_name: qbit
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ENABLE_PRIVOXY=no
+      - HOME=/home/nobody
+      - LAN_NETWORK=192.168.86.0/24
+      - LANG=en_GB.UTF-8
+      - NAME_SERVERS=84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PGID=0
+      - PUID=0
+      - STRICT_PORT_FORWARD=no
+      - TERM=xterm
+      - UMASK=000
+      - VPN_CLIENT=openvpn
+      - VPN_ENABLED=yes
+      - VPN_INPUT_PORT=1234
+      - VPN_OUTPUT_PORTS=5678
+      - VPN_PASS=${VPN_PASS}
+      - VPN_PROV=custom
+      - VPN_USER=${VPN_USER}
+      - WEBUI_PORT=8090
+    ports:
+      - 9119:9119
+      - 58946:58946
+      - 58946:58946/udp
+      - 8090:8090
+      - 8118:8118
+    volumes:
+      - /volume1/docker/qbit/config:/config
+      - /volume1/docker/qbit/data:/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
