@@ -3,7 +3,7 @@ version: '3'
 
 services:
   qbit:
-    image: ghcr.io/binhex/arch-qbittorrentvpn:5.2.0-1-01
+    image: ghcr.io/binhex/arch-qbittorrentvpn:5.1.2-1-05
     container_name: qbit
     cap_add:
       - NET_ADMIN
