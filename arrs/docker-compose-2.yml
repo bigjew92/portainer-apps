@@ -10,7 +10,7 @@ services:
       - /volume1/docker/arr/son_config:/config
       - /volume1/tv:/tv:rw
       - /volume1/docker/qbit/data/complete:/data/complete
-      - /volume1/nas1/TV Shows:/tv1:ro
+      - /volume1/nas1/TV Shows:/tv1:rw
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -25,7 +25,7 @@ services:
       - /volume1/docker/arr/rad_config:/config
       - /volume1/movies:/movies:rw
       - /volume1/docker/qbit/data/complete:/data/complete
-      - /volume1/nas1/Movies:/movies1:ro
+      - /volume1/nas1/Movies:/movies1:rw
     ports:
       - 7878:7878
     restart: unless-stopped
