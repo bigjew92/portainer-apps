@@ -9,6 +9,7 @@ services:
     volumes:
       - /volume1/docker/arr/son_config:/config
       - /volume1/tv:/tv:rw
+      - /volume1/docker/qbit/data/complete:/data/complete
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -22,6 +23,7 @@ services:
     volumes:
       - /volume1/docker/arr/rad_config:/config
       - /volume1/movies:/movies:rw
+      - /volume1/docker/qbit/data/complete:/data/complete
     ports:
       - 7878:7878
     restart: unless-stopped
