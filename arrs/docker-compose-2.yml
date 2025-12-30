@@ -8,6 +8,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /volume1/docker/arr/son_config:/config
+      - /volume1/tv:/tv
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -20,6 +21,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /volume1/docker/arr/rad_config:/config
+      - /volume1/movies:/movies
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -44,6 +46,8 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /volume1/docker/arr/baz_config:/config
+      - /volume1/movies:/movies
+      - /volume1/tv:/tv
     ports:
       - 6767:6767
     restart: unless-stopped
