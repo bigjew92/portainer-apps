@@ -1,0 +1,21 @@
+---
+version: '3'
+
+services:
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Los_Angeles
+      - PORT=5055
+      - PUID=1000 
+      - PGID=1000 
+    ports:
+      - 5055:5055
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - /volume1/docker/overseerr/config:/config
+    restart: unless-stopped
