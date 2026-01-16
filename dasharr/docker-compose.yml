@@ -30,6 +30,7 @@ services:
       - ENV=Docker
       - DATABASE_URL=${DATABASE_URL}
       - API_KEY=${API_KEY}
+      - WEB_SERVER_PORT=${WEB_SERVER_PORT}
     # env_file:
     #   - /volume1/docker/dasharr/dash.env  # Use absolute path
     depends_on:
