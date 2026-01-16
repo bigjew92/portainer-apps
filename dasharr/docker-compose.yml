@@ -23,7 +23,7 @@ services:
 
   dasharr:
     container_name: dasharr
-    image: ghcr.io/arcadia-solutions/dasharr:latest
+    image: ghcr.io/arcadia-solutions/dasharr:0.2.0
     ports:
       - 3000:80
     environment:
