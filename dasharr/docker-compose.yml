@@ -1,0 +1,33 @@
+services:
+  db:
+    container_name: dasharr_db
+    image: postgres:18
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - /volume1/docker/dasharr/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dasharr"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  dasharr:
+    container_name: dasharr
+    image: ghcr.io/arcadia-solutions/dasharr:latest
+    ports:
+      - 3000:80
+    environment:
+      - ENV=Docker
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
