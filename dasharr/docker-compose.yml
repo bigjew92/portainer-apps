@@ -9,7 +9,7 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - .env
+      - /volume1/docker/dasharr/.env  # Use absolute path
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dasharr"]
       interval: 5s
@@ -24,10 +24,7 @@ services:
     environment:
       - ENV=Docker
     env_file:
-      - .env
+      - /volume1/docker/dasharr/.env  # Use absolute path
     depends_on:
       db:
         condition: service_healthy
-
-volumes:
-  db_data:
