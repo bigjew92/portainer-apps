@@ -21,10 +21,10 @@ services:
     image: ghcr.io/arcadia-solutions/dasharr:latest
     ports:
       - 3000:80
-    env_file:
-      - /volume1/docker/dasharr/.env
     environment:
       - ENV=Docker
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
