@@ -5,7 +5,7 @@ services:
     restart: always
     shm_size: 128mb
     volumes:
-      - /volume1/docker/dasharr/db:/var/lib/postgresql/data
+      - /volume1/docker/dasharr/db:/var/lib/postgresql
     ports:
       - 5433:5432
     environment:
