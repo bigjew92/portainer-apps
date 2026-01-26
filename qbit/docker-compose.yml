@@ -29,6 +29,7 @@ services:
       - VPN_USER=${VPN_USER}
       - WEBUI_PORT=8090
     ports:
+      - 5010:5010 # Mousehole port
       - 9119:9119
       - 58946:58946
       - 58946:58946/udp
@@ -40,4 +41,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+  
+  mousehole:
+    image: tmmrtn/mousehole:latest
+    network_mode: "service:qbit" 
+    volumes:
+      - /volume1/docker/qbit/mousehole:/srv/mousehole
     restart: unless-stopped
