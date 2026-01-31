@@ -21,7 +21,7 @@ services:
       #
       # Share virtual printer certs with native installation
       # This ensures the slicer only needs to trust one CA certificate.
-      - ./virtual_printer:/app/data/virtual_printer
+      # - ./virtual_printer:/app/data/virtual_printer
     environment:
       - TZ=America/Los_Angeles
       # Port BamBuddy runs on (default: 8000)
