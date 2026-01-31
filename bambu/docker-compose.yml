@@ -17,7 +17,7 @@ services:
     #  - "${PORT:-8000}:8000"
     volumes:
       - /volume1/docker/bambu/data:/app/data
-      - /volume1/docker/bambu/ogs:/app/logs
+      - /volume1/docker/bambu/logs:/app/logs
       #
       # Share virtual printer certs with native installation
       # This ensures the slicer only needs to trust one CA certificate.
