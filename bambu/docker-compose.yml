@@ -1,31 +1,13 @@
 services:
   bambuddy:
-    image: ghcr.io/maziggy/bambuddy:latest
-    # build: .
-    # Usage:
-    #   docker compose up -d          → pulls pre-built image from ghcr.io
-    #   docker compose up -d --build  → builds locally from source
+    image: idisposablegithub365/wyze-bridge:latest
     container_name: bambuddy
-    #
-    # LINUX: Use host mode for printer discovery and camera streaming
     network_mode: host
-    #
-    # macOS/WINDOWS: Docker Desktop doesn't support host mode.
-    # Comment out "network_mode: host" above and uncomment "ports:" below.
-    # Note: Printer discovery won't work - add printers manually by IP.
-    #ports:
-    #  - "${PORT:-8000}:8000"
     volumes:
       - /volume1/docker/bambu/data:/app/data
       - /volume1/docker/bambu/logs:/app/logs
-      #
-      # Share virtual printer certs with native installation
-      # This ensures the slicer only needs to trust one CA certificate.
-      # - ./virtual_printer:/app/data/virtual_printer
     environment:
       - TZ=America/Los_Angeles
-      # Port BamBuddy runs on (default: 8000)
-      # Usage: PORT=8080 docker compose up -d
       - PORT=8003
     restart: unless-stopped
 
@@ -44,10 +26,10 @@ services:
           # [OPTIONAL] Credentials can be set in the WebUI
           # API Key and ID can be obtained from the wyze dev portal: 
           # https://developer-api-console.wyze.com/#/apikey/view
-          # - WYZE_EMAIL=
-          # - WYZE_PASSWORD= 
-          # - API_ID=
-          # - API_KEY= 
+          - WYZE_EMAIL: ${WYZE_EMAIL}
+          - WYZE_PASSWORD: ${WYZE_PASSWORD}
+          - API_ID: ${API_ID}
+          - API_KEY: ${API_KEY}
           # [OPTIONAL] IP Address of the host to enable WebRTC e.g.,:
           # - WB_IP=192.168.1.122
           # WebUI and Stream authentication:
