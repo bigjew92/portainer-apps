@@ -1,6 +1,6 @@
 services:
   bambuddy:
-    image: idisposablegithub365/wyze-bridge:latest
+    image: ghcr.io/maziggy/bambuddy:latest
     container_name: bambuddy
     network_mode: host
     volumes:
@@ -12,27 +12,27 @@ services:
     restart: unless-stopped
 
   wyze-bridge:
-      container_name: wyze-bridge
-      restart: unless-stopped
-      image: mrlt8/wyze-bridge:latest
-      ports:
-          - 1935:1935 # RTMP
-          - 8554:8554 # RTSP
-          - 8888:8888 # HLS
-          - 8889:8889 #WebRTC
-          - 8189:8189/udp # WebRTC/ICE
-          - 5003:5000 # WEB-UI
-      environment:
-          # [OPTIONAL] Credentials can be set in the WebUI
-          # API Key and ID can be obtained from the wyze dev portal: 
-          # https://developer-api-console.wyze.com/#/apikey/view
-          WYZE_EMAIL: ${WYZE_EMAIL}
-          WYZE_PASSWORD: ${WYZE_PASSWORD}
-          API_ID: ${API_ID}
-          API_KEY: ${API_KEY}
-          # [OPTIONAL] IP Address of the host to enable WebRTC e.g.,:
-          # - WB_IP=192.168.1.122
-          # WebUI and Stream authentication:
-          - WB_AUTH=True # Set to false to disable web and stream auth.
-          # WB_USERNAME=
-          # WB_PASSWORD=
+    container_name: wyze-bridge
+    restart: unless-stopped
+    image: idisposablegithub365/wyze-bridge:latest
+    ports:
+      - 1935:1935 # RTMP
+      - 8554:8554 # RTSP
+      - 8888:8888 # HLS
+      - 8889:8889 #WebRTC
+      - 8189:8189/udp # WebRTC/ICE
+      - 5003:5000 # WEB-UI
+    environment:
+      # [OPTIONAL] Credentials can be set in the WebUI
+      # API Key and ID can be obtained from the wyze dev portal: 
+      # https://developer-api-console.wyze.com/#/apikey/view
+      - WYZE_EMAIL: ${WYZE_EMAIL}
+      - WYZE_PASSWORD: ${WYZE_PASSWORD}
+      - API_ID: ${API_ID}
+      - API_KEY: ${API_KEY}
+      # [OPTIONAL] IP Address of the host to enable WebRTC e.g.,:
+      # - WB_IP=192.168.1.122
+      # WebUI and Stream authentication:
+      - WB_AUTH: True # Set to false to disable web and stream auth.
+      # WB_USERNAME=
+      # WB_PASSWORD=
