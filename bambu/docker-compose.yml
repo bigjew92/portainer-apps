@@ -12,7 +12,6 @@ services:
     restart: unless-stopped
 
   wyze-bridge:
-    network_mode: host
     container_name: wyze-bridge
     restart: unless-stopped
     image: idisposablegithub365/wyze-bridge:latest
