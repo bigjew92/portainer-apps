@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
 
   wyze-bridge:
+    network_mode: host
     container_name: wyze-bridge
     restart: unless-stopped
     image: idisposablegithub365/wyze-bridge:latest
@@ -36,3 +37,4 @@ services:
       - WB_AUTH=False # Set to false to disable web and stream auth.
       # WB_USERNAME=
       # WB_PASSWORD=
+      - WB_IP=192.168.86.170
