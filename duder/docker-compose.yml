@@ -1,0 +1,23 @@
+services:
+  duder:
+    command:
+      - /duder
+    container_name: "duder"
+    environment:
+      - PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - GOLANG_VERSION=1.20.8
+      - GOPATH=/go
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OWNER_ID=${OWNER_ID}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+    image: ghcr.io/bigjew92/duder:latest
+    volumes:
+      - "/volume1/docker/duder/config/weather.json:/app/rugs/weather.json"
+      - "/volume1/docker/duder/config/lastseen.json:/app/rugs/lastseen.json"
+      - "/volume1/docker/duder/config/youtube.json:/app/rugs/youtube.json"
+      - "/volume1/docker/duder/config/xbl.json:/app/rugs/xbl.json"
+      - "/volume1/docker/duder/config/raffle.json:/app/rugs/raffle.json"
+      - "/volume1/docker/duder/config/memes.json:/app/rugs/memes.json"
+      - "/volume1/docker/duder/config/reactionrank.json:/app/rugs/reactionrank.json"
+    restart: always
+    working_dir: /app
