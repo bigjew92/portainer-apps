@@ -19,5 +19,6 @@ services:
       - "/volume1/docker/duder/config/raffle.json:/app/rugs/raffle.json"
       - "/volume1/docker/duder/config/memes.json:/app/rugs/memes.json"
       - "/volume1/docker/duder/config/reactionrank.json:/app/rugs/reactionrank.json"
+      - "/volume1/docker/duder/config/itsfriday.mp4:/app/video/itsfriday.mp4"
     restart: always
     working_dir: /app
