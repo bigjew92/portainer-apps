@@ -2,20 +2,43 @@
 version: '3'
 
 services:
-  overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
-    container_name: overseerr
+  # overseerr:
+  #   image: lscr.io/linuxserver/overseerr:latest
+  #   container_name: overseerr
+  #   environment:
+  #     - LOG_LEVEL=debug
+  #     - TZ=America/Los_Angeles
+  #     - PORT=5055
+  #     - PUID=1000 
+  #     - PGID=1000 
+  #   ports:
+  #     - 5055:5055
+  #   dns:
+  #     - 1.1.1.1
+  #     - 8.8.8.8
+  #   volumes:
+  #     - /volume1/docker/overseerr/config:/config
+  #   restart: unless-stopped
+  
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    container_name: seerr
     environment:
       - LOG_LEVEL=debug
       - TZ=America/Los_Angeles
-      - PORT=5055
-      - PUID=1000 
-      - PGID=1000 
+      - PORT=5055 #optional
     ports:
       - 5055:5055
     dns:
       - 1.1.1.1
       - 8.8.8.8
     volumes:
-      - /volume1/docker/overseerr/config:/config
+      - /volume1/docker/seerr/config:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
     restart: unless-stopped
