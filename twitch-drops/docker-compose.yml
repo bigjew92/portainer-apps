@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
 
   discord-notifier:
-    image: alpine:latest
+    image: docker:24.0.0-cli-alpine
     container_name: twitch-discord-notifier
     depends_on:
       - twitch-drops-miner
@@ -23,10 +23,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - CONTAINER_NAME=twitch-drops-miner
-      - WEBHOOK_URL=Y${WEBHOOK_URL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
     command: >
       /bin/sh -c "
-        apk add --no-cache docker-cli curl jq grep &&
+        apk add --no-cache curl jq grep &&
         echo 'Starting Discord Notifier for container:' $$CONTAINER_NAME;
         while true; do
           docker logs -f --tail 0 $$CONTAINER_NAME 2>&1 | grep --line-buffered 'Claimed drop:' | while read -r line ; do
