@@ -1,0 +1,27 @@
+services:
+  readarr:
+    container_name: readarr
+    image: ghcr.io/hotio/readarr:latest
+    ports:
+      - "8787:8787"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=America/Los_Angeles
+    volumes:
+      - /volume1/docker/readarr/config:/config
+      - /volume1/docker/readarr/data:/data
+      - /volume1/docker/delugevpn/data/completed:/data/completed
+  audiobookshelf:
+    container_name: audiobookshelf
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    ports:
+      - 13378:80
+    volumes:
+      - /volume1/docker/readarr/data:/audiobooks
+      - /volume1/docker/audiobookshelf/podcasts:/podcasts
+      - /volume1/docker/audiobookshelf/config:/config
+      - /volume1/docker/audiobookshelf/metadata:/metadata
+    environment:
+      - TZ=America/Los_Angeles

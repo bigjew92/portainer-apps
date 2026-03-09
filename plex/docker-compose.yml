@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:1.42.1
+
+    container_name: PlexHW
+    hostname: plex
+    network_mode: host
+    mem_limit: 4g
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:32400/web
+    volumes:
+      - /volume1/docker/plex:/config:rw
+      - /volumeUSB1/usbshare/plextc:/transcode
+      - /volume1/Movies:/movies:ro
+      - /volume1/TV Shows:/tv:ro
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    environment:
+      TZ: America/Los_Angeles
+      PUID: 1026
+      PGID: 100
+      VERSION: public
+      PLEX_CLAIM: claim-YiLD-ckxuCP5LdUPJZyE
+    restart: on-failure:5

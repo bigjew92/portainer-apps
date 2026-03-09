@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared:2025.9.0
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=eyJhIjoiMmYzMDZhMzM3YmE2MTQxZWQ0YTUzOWEwMDBiYTI1NWQiLCJ0IjoiMGM5NmE3YTItNDNhNy00MjBhLTkyZjUtODEyOGQ0NWM4OGRkIiwicyI6IlpUbGhPR1UxWWpVdE1qWmxaQzAwTldZeExUazFPR1l0WkRjNU9HVXlOekprWkdNMCJ9

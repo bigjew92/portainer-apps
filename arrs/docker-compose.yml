@@ -1,0 +1,41 @@
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /volume1/docker/sonarr/config:/config
+      - /volume1/TV Shows:/tv #optional
+      - /volume1/docker/delugevpn/data/completed:/data/completed #optional
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /volume1/docker/radarr/config:/config
+      - /volume1/Movies:/movies #optional
+      - /volume1/docker/delugevpn/data/completed:/data/completed #optional
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /volume1/docker/prowlarr/config:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped

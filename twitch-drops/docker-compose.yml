@@ -1,0 +1,54 @@
+version: "3.4"
+services:
+  twitch-drops-miner:
+    image: dungfu/twitch-drops-miner:latest
+    container_name: twitch-drops-miner
+    ports:
+      - "5800:5800"
+    volumes:
+      - /volume1/docker/tdm/config:/TwitchDropsMiner/config
+      - /volume1/docker/tdm/cache:/TwitchDropsMiner/cache
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
+
+  discord-notifier:
+    image: alpine:latest
+    container_name: twitch-discord-notifier
+    depends_on:
+      - twitch-drops-miner
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CONTAINER_NAME=twitch-drops-miner
+      - WEBHOOK_URL=Y${WEBHOOK_URL}
+    command: >
+      /bin/sh -c "
+        apk add --no-cache docker-cli curl jq &&
+        echo 'Starting Discord Notifier for container:' $$CONTAINER_NAME;
+        while true; do
+          docker logs -f $$CONTAINER_NAME 2>&1 | grep --line-buffered 'Claimed drop:' | while read -r line ; do
+            DROP_TEXT=\$$(echo \"\$$line\" | sed -n 's/.*Claimed drop: //p');
+            PAYLOAD=\$$(jq -n -c --arg txt \"\$$DROP_TEXT\" --arg time \"\$$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\" '
+              {
+                embeds: [{
+                  title: \"🎉 Drop Claimed! 🎉\",
+                  url: \"https://www.twitch.tv/drops/inventory\",
+                  description: \$$txt,
+                  color: 9055202,
+                  timestamp: \$$time,
+                  thumbnail: {
+                    url: \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Twitch_Glitch_Logo_Purple.svg/1024px-Twitch_Glitch_Logo_Purple.svg.png\"
+                  }
+                }]
+              }');
+            curl -sS -H 'Content-Type: application/json' -X POST -d \"\$$PAYLOAD\" \"\$$WEBHOOK_URL\";
+            echo 'Notification sent for:' \"\$$DROP_TEXT\";
+          done;
+          sleep 5;
+        done
+      "
+    restart: unless-stopped
+

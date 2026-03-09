@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+    maintainerr:
+        image: ghcr.io/maintainerr/maintainerr:latest
+        container_name: maintainerr
+        user: 1000:1000
+        volumes:
+          - type: bind
+            source: /volume1/docker/maintainerr/data
+            target: /opt/data
+        environment:
+          - TZ=America/Los_Angeles
+#      - DEBUG=true # uncomment to enable debug logs
+        ports:
+          - 6246:6246 
+        restart: unless-stopped
+
+    maintainerr-overlay-helperr:
+        image: gsariev/maintainerr-overlay-helperr:latest
+        volumes:
+          - /volume1/docker/maintainerr/images:/images
+          - /volume1/docker/maintainerr/fonts:/fonts
+        environment:
+          PLEX_URL: "http://192.168.86.188:32400"
+          PLEX_TOKEN: "RHKdub6aHww8ug6Zkcxy"
+          MAINTAINERR_URL: "http://192.168.86.188:6246"
+          IMAGE_SAVE_PATH: "/images"
+          ORIGINAL_IMAGE_PATH: "/images/originals"
+          TEMP_IMAGE_PATH: "/images/temp"
+    
+          # Change the values here to customize the overlay
+          FONT_PATH: "/fonts/AvenirNextLTPro-Bold.ttf"
+          FONT_COLOR: "#ffffff"
+          BACK_COLOR: "#B20710"
+          FONT_SIZE: "55"
+          PADDING: "15"
+          BACK_RADIUS: "30"
+          HORIZONTAL_OFFSET: "30"
+          HORIZONTAL_ALIGN: "center"
+          VERTICAL_OFFSET: "40"
+          VERTICAL_ALIGN: "top"
+    
+          DATE_FORMAT: "MMM d"    # Set your desired date format between "d MMM" or "MMM d"
+          OVERLAY_TEXT: "Leaving"    # Set your desired text to display before removal date
+      
+          ENABLE_DAY_SUFFIX: true    # Enable or disable date suffix (i.e. th from November 14th). Mainly for french people
+          ENABLE_UPPERCASE: false    # Use uppercase or lowercase for date format
+    
+          LANGUAGE: "en-US"    # Used for date format and month abbreviation language. You can change this as needed (e.g., "fr-FR" for French), will default to en-US if not provided.
+          
+          RUN_INTERVAL: "480"    # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
