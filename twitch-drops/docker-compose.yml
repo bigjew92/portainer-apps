@@ -26,7 +26,7 @@ services:
       - WEBHOOK_URL=Y${WEBHOOK_URL}
     command: >
       /bin/sh -c "
-        apk add --no-cache docker-cli curl jq &&
+        apk add --no-cache docker-cli curl jq grep &&
         echo 'Starting Discord Notifier for container:' $$CONTAINER_NAME;
         while true; do
           docker logs -f $$CONTAINER_NAME 2>&1 | grep --line-buffered 'Claimed drop:' | while read -r line ; do
