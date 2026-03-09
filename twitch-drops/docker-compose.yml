@@ -30,26 +30,24 @@ services:
         apk add --no-cache curl jq grep &&
         echo 'Starting Discord Notifier for container:' $$CONTAINER_NAME;
         while true; do
-          docker logs -f --tail 0 $$CONTAINER_NAME 2>&1 \
-            | grep --line-buffered 'Claimed drop:' \
-            | while read -r line ; do
-              DROP_TEXT=$$(echo "$$line" | sed -n 's/.*Claimed drop: //p');
-              PAYLOAD=$$(jq -n -c --arg txt "$$DROP_TEXT" --arg time "$$(date -u +"%Y-%m-%dT%H:%M:%SZ")" '
-                {
-                  embeds: [{
-                    title: "🎉 Drop Claimed! 🎉",
-                    url: "https://www.twitch.tv/drops/inventory",
-                    description: $txt,
-                    color: 9055202,
-                    timestamp: $time,
-                    thumbnail: {
-                      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Twitch_Glitch_Logo_Purple.svg/1024px-Twitch_Glitch_Logo_Purple.svg.png"
-                    }
-                  }]
-                }');
-              curl -sS -H 'Content-Type: application/json' -X POST -d "$$PAYLOAD" "$$WEBHOOK_URL";
-              echo 'Notification sent for:' "$$DROP_TEXT";
-            done;
+          docker logs -f --tail 0 $$CONTAINER_NAME 2>&1 | grep --line-buffered 'Claimed drop:' | while read -r line ; do
+            DROP_TEXT=\$$(echo \"\$$line\" | sed -n 's/.*Claimed drop: //p');
+            PAYLOAD=\$$(jq -n -c --arg txt \"\$$DROP_TEXT\" --arg time \"\$$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\" '
+              {
+                embeds: [{
+                  title: \"🎉 Drop Claimed! 🎉\",
+                  url: \"https://www.twitch.tv/drops/inventory\",
+                  description: \$$txt,
+                  color: 9055202,
+                  timestamp: \$$time,
+                  thumbnail: {
+                    url: \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Twitch_Glitch_Logo_Purple.svg/1024px-Twitch_Glitch_Logo_Purple.svg.png\"
+                  }
+                }]
+              }');
+            curl -sS -H 'Content-Type: application/json' -X POST -d \"\$$PAYLOAD\" \"\$$WEBHOOK_URL\";
+            echo 'Notification sent for:' \"\$$DROP_TEXT\";
+          done;
           sleep 5;
         done
       "
