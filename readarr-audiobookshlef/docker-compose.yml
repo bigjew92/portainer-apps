@@ -1,27 +1,28 @@
 services:
-  readarr:
-    container_name: readarr
-    image: ghcr.io/hotio/readarr:latest
-    ports:
-      - "8787:8787"
+  chaptarr:
+    image: robertlordhood/chaptarr:latest
+    container_name: chaptarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=America/Los_Angeles
+      PUID: 1000
+      PGID: 1000
+      TZ: America/Los_Angeles
     volumes:
-      - /volume1/docker/readarr/config:/config
-      - /volume1/docker/readarr/data:/data
-      - /volume1/docker/delugevpn/data/completed:/data/completed
+      - /volume1/docker/books/chaptarr/config:/config
+      - /volume1/docker/books/ebooks:/books
+      - /volume1/docker/books/audiobooks:/audiobooks
+      - /volume1/docker/qbit/data/manual/complete:/downloads
+    ports:
+      - 8789:8789
+    restart: "unless-stopped"
   audiobookshelf:
     container_name: audiobookshelf
     image: ghcr.io/advplyr/audiobookshelf:latest
     ports:
       - 13378:80
     volumes:
-      - /volume1/docker/readarr/data:/audiobooks
-      - /volume1/docker/audiobookshelf/podcasts:/podcasts
-      - /volume1/docker/audiobookshelf/config:/config
-      - /volume1/docker/audiobookshelf/metadata:/metadata
+      - /volume1/docker/books/audiobooks:/audiobooks
+      - /volume1/docker/books/podcasts:/podcasts
+      - /volume1/docker/books/config:/config
+      - /volume1/docker/books/metadata:/metadata
     environment:
       - TZ=America/Los_Angeles
