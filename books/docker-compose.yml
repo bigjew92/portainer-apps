@@ -10,7 +10,7 @@ services:
       - /volume1/docker/books/chaptarr/config:/config
       - /volume1/docker/books/ebooks:/books
       - /volume1/docker/books/audiobooks:/audiobooks
-      - /volume1/docker/qbit/data/manual/complete:/downloads
+      - /volume1/docker/qbit/data/manual/complete:/data/manual/complete
     ports:
       - 8789:8789
     restart: "unless-stopped"
