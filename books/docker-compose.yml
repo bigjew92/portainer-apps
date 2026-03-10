@@ -20,7 +20,7 @@ services:
     ports:
       - 13378:80
     volumes:
-      - /volume1/docker/books/audiobooks:/audiobooks
+      - /volume1/docker/qbit/data/manual/complete:/audiobooks
       - /volume1/docker/books/podcasts:/podcasts
       - /volume1/docker/books/config:/config
       - /volume1/docker/books/metadata:/metadata
