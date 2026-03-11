@@ -5,7 +5,7 @@ services:
     image: akiraslingshot/bookkeep:latest
     container_name: bookkeep
     environment:
-      DATABASE_URL: postgresql://bookkeep:bookkeep_password@db:5434/bookkeep_db
+      DATABASE_URL: postgresql://bookkeep:bookkeep_password@db:5432/bookkeep_db
       HARDCOVER_API_TOKEN: ${HARDCOVER_API_TOKEN:-}
       REDIS_URL: redis://redis:6379/0
       # BOOKKEEP_SECRET_KEY: ${BOOKKEEP_SECRET_KEY:-}
