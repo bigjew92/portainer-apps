@@ -9,6 +9,10 @@ services:
       HARDCOVER_API_TOKEN: ${HARDCOVER_API_TOKEN:-}
       REDIS_URL: redis://redis:6379/0
       # BOOKKEEP_SECRET_KEY: ${BOOKKEEP_SECRET_KEY:-}
+    entrypoint:
+      - /bin/bash
+      - -c
+      - "export PYTHONPATH=/app/backend; python -c 'import sys; sys.path.insert(0, \"/app/backend\"); from app.main import app; from app.database import Base, engine; Base.metadata.create_all(bind=engine)' || true; exec /app/entrypoint.sh"
     volumes:
       # Mount host download directories so Bookkeep can access completed downloads.
       # Adjust the left side (host path) to match your download client's output directory.
@@ -44,7 +48,6 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
-
   # Optional: FlareSolverr for direct downloads (solves DDoS-Guard challenges)
   # flaresolverr:
   #   image: ghcr.io/flaresolverr/flaresolverr:latest
