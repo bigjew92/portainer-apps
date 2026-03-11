@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  app:
+    image: akiraslingshot/bookkeep:latest
+    container_name: bookkeep
+    environment:
+      DATABASE_URL: postgresql://bookkeep:bookkeep_password@db:5432/bookkeep_db
+      HARDCOVER_API_TOKEN: ${HARDCOVER_API_TOKEN:-}
+      REDIS_URL: redis://redis:6379/0
+      # BOOKKEEP_SECRET_KEY: ${BOOKKEEP_SECRET_KEY:-}
+    volumes:
+      # Mount host download directories so Bookkeep can access completed downloads.
+      # Adjust the left side (host path) to match your download client's output directory.
+      - /volume1/docker/qbit/data/manual/complete:/downloads
+      # Example: separate mounts for different media types
+      - /volume1/docker/books/ebooks:/books
+      - /volume1/docker/books/audiobooks:/audiobooks
+    ports:
+      - "14478:8000"
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: bookkeep-db
+    environment:
+      POSTGRES_DB: bookkeep_db
+      POSTGRES_USER: bookkeep
+      POSTGRES_PASSWORD: bookkeep_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: bookkeep-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # Optional: FlareSolverr for direct downloads (solves DDoS-Guard challenges)
+  # flaresolverr:
+  #   image: ghcr.io/flaresolverr/flaresolverr:latest
+  #   container_name: bookkeep-flaresolverr
+  #   environment:
+  #     LOG_LEVEL: info
+  #   ports:
+  #     - "8191:8191"
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
