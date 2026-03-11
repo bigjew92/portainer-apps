@@ -9,10 +9,6 @@ services:
       HARDCOVER_API_TOKEN: ${HARDCOVER_API_TOKEN:-}
       REDIS_URL: redis://redis:6379/0
       # BOOKKEEP_SECRET_KEY: ${BOOKKEEP_SECRET_KEY:-}
-    entrypoint:
-      - /bin/bash
-      - -c
-      - "export PYTHONPATH=/app/backend; python -c 'import sys; sys.path.insert(0, \"/app/backend\"); from app.main import app; from app.database import Base, engine; Base.metadata.create_all(bind=engine)' || true; exec /app/entrypoint.sh"
     volumes:
       # Mount host download directories so Bookkeep can access completed downloads.
       # Adjust the left side (host path) to match your download client's output directory.
@@ -23,8 +19,12 @@ services:
     ports:
       - "14478:8000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
     restart: unless-stopped
 
   db:
@@ -38,7 +38,53 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookkeep -d bookkeep_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
+
+  db-init:
+    image: postgres:16-alpine
+    container_name: bookkeep-db-init
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: bookkeep_password
+    command: >
+      psql -h db -U bookkeep -d bookkeep_db -c "
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY, email VARCHAR UNIQUE NOT NULL, username VARCHAR UNIQUE NOT NULL,
+          hashed_password VARCHAR, full_name VARCHAR, oidc_subject VARCHAR UNIQUE,
+          is_active BOOLEAN DEFAULT TRUE, is_admin BOOLEAN DEFAULT FALSE,
+          can_request_ebook BOOLEAN DEFAULT TRUE, can_request_audiobook BOOLEAN DEFAULT TRUE,
+          can_download BOOLEAN DEFAULT TRUE, auto_approve_ebooks BOOLEAN DEFAULT TRUE,
+          auto_approve_audiobooks BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ
+        );
+        CREATE TABLE IF NOT EXISTS series (
+          id SERIAL PRIMARY KEY, hardcover_id INTEGER UNIQUE NOT NULL,
+          name VARCHAR NOT NULL, books_count INTEGER, is_seed_data BOOLEAN DEFAULT FALSE
+        );
+        CREATE TABLE IF NOT EXISTS books (
+          id SERIAL PRIMARY KEY, title VARCHAR NOT NULL, author VARCHAR NOT NULL,
+          author_id INTEGER, isbn VARCHAR UNIQUE, description TEXT, cover_url VARCHAR,
+          genre VARCHAR, published_date VARCHAR, rating FLOAT, page_count INTEGER,
+          hardcover_id INTEGER UNIQUE, hardcover_slug VARCHAR, booklore_id INTEGER UNIQUE,
+          booklore_added_on TIMESTAMPTZ, audiobookshelf_id VARCHAR UNIQUE,
+          default_edition_id INTEGER, default_physical_edition_id INTEGER,
+          default_ebook_edition_id INTEGER, default_audio_edition_id INTEGER,
+          series VARCHAR, series_id INTEGER, series_position FLOAT, genres VARCHAR,
+          ratings_count INTEGER, users_count INTEGER, activities_count INTEGER,
+          release_year INTEGER, is_seed_data BOOLEAN DEFAULT FALSE,
+          ebook_available BOOLEAN DEFAULT FALSE, audiobook_available BOOLEAN DEFAULT FALSE,
+          last_refreshed TIMESTAMPTZ, downloaded_release_hashes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ
+        );
+      "
+    restart: on-failure
 
   redis:
     image: redis:7-alpine
