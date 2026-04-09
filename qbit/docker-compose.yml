@@ -34,6 +34,7 @@ services:
       - 58946:58946
       - 58946:58946/udp
       - 8090:8090
+      - 7476:7476 # Qui Web UI
       - 8118:8118
     volumes:
       - /volume1/docker/qbit/config:/config
@@ -48,4 +49,14 @@ services:
     network_mode: "service:qbit" 
     volumes:
       - /volume1/docker/qbit/mousehole:/srv/mousehole
+    restart: unless-stopped
+
+  qui:
+    image: ghcr.io/autobrr/qui:latest
+    container_name: qui
+    network_mode: "service:qbit"
+    volumes:
+      - /volume1/docker/qbit/qui:/config
+      # Added per "Local Filesystem Access" docs to match qbit's data path exactly
+      - /volume1/docker/qbit/data:/data 
     restart: unless-stopped
