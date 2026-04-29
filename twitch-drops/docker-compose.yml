@@ -27,11 +27,12 @@ services:
       - WEBHOOK_URL=${WEBHOOK_URL}
     command: >
       /bin/sh -c "
-        apk add --no-cache curl jq grep &&
+        apk add --no-cache curl jq grep sed &&
         echo 'Starting Discord Notifier for container:' $$CONTAINER_NAME;
         while true; do
-          docker logs -f --tail 0 $$CONTAINER_NAME 2>&1 | grep --line-buffered 'Claimed drop:' | while read -r line ; do
-            DROP_TEXT=\$$(echo \"\$$line\" | sed -n 's/.*Claimed drop: //p');
+          docker logs -f --tail 0 $$CONTAINER_NAME | grep --line-buffered 'Claimed drop:' | while read -r line ; do
+            CLEAN_LINE=\$$(echo \"\$$line\" | sed -E 's/\x1b\[[0-9;]*[a-zA-Z]//g');
+            DROP_TEXT=\$$(echo \"\$$CLEAN_LINE\" | sed -n 's/.*Claimed drop: //p');
             PAYLOAD=\$$(jq -n -c --arg txt \"\$$DROP_TEXT\" --arg time \"\$$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\" '
               {
                 embeds: [{
