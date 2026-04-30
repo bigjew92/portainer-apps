@@ -1,0 +1,65 @@
+services:
+  # ==========================================
+  # AI Language Models & Interface
+  # ==========================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "11434:11434/tcp"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: always
+    environment:
+      - ENV=prod
+      - OLLAMA_BASE_URL=/ollama
+      - WEBUI_SECRET_KEY= # You can set a random string here or leave blank
+    ports:
+      - "3000:8080/tcp"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui:/app/backend/data
+
+  # ==========================================
+  # Image Generation (Stable Diffusion)
+  # ==========================================
+  auto:
+    image: sd-auto:78
+    container_name: webui-docker-auto-1
+    restart: always
+    environment:
+      - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "7860:7860/tcp"
+    volumes:
+      - /stable-diffusion-webui-docker/data:/data
+      - /stable-diffusion-webui-docker/output:/output
+
+  # ==========================================
+  # External Access & Routing
+  # ==========================================
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: always
+    # The token will be securely injected by Komodo via the ${CLOUDFLARE_TOKEN} variable
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+
+volumes:
+  # External volumes ensure your downloaded AI models and chats persist across rebuilds
+  ollama_data:
+    external: true
+  open-webui:
+    external: true
