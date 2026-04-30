@@ -25,5 +25,5 @@ services:
       PUID: 1026
       PGID: 100
       VERSION: public
-      PLEX_CLAIM: claim-YiLD-ckxuCP5LdUPJZyE
+      PLEX_CLAIM: ${PLEX_CLAIM}
     restart: on-failure:5
