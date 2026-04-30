@@ -35,6 +35,7 @@ services:
   # ==========================================
   auto:
     image: sd-auto:78
+    pull_policy: never
     container_name: webui-docker-auto-1
     restart: always
     environment:
